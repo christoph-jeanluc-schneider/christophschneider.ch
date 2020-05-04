@@ -1,0 +1,60 @@
+@font-face {
+    font-family: "UbuntuThin";
+    src: url("/fonts/Ubuntu-Th.ttf");
+}
+
+:root {
+    font-family: "UbuntuThin" -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 16px;
+    color: white;
+    -webkit-user-select: none; /* Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+}
+
+html,
+body {
+    padding: 0;
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgb(51,51,51);
+}
+
+canvas {
+    position: relative;
+    z-index: 1;
+}
+
+.content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    text-align: center;
+    z-index: 10;
+}
+
+h1 {
+    font-family: "UbuntuThin";
+    font-size: 60px;
+    margin-top: 43vh;
+    margin-bottom: 24px;
+    font-weight: normal;
+    text-shadow: 6px 12px 8px black;
+}
+
+a {
+    font-family: "UbuntuThin";
+    color: #00ffff; /* cyan */
+    font-size: 20px;
+    text-decoration: none;
+    text-shadow: 6px 12px 8px black;
+    transition: all 0.2s;
+}
+a:hover {
+    color: #ff1493; /* deeppink */
+    text-decoration: none;
+}
