@@ -1,8 +1,7 @@
 const vw = Math.max( document.documentElement.clientWidth, window.innerWidth || 0 );
 const vh = Math.max( document.documentElement.clientHeight, window.innerHeight || 0 );
 
-const anchorGap = 220;
-const D = 0.2;
+const anchorGap = 80;
 
 var anchors = [];
 var connections = [];
@@ -56,9 +55,9 @@ function draw() {
     translate( offsetX, offsetY );
     scale( zoom );
 
-    for( let i in anchors ) {
-        anchors[ i ].draw();
-    }
+    // for( let i in anchors ) {
+    //     anchors[ i ].draw();
+    // }
 
     for( let i in connections ) {
         connections[ i ].update();
@@ -75,9 +74,9 @@ class Anchor {
     }
 
     draw() {
-        fill( 255, 127 );
+        fill( 255 );
         noStroke();
-        ellipse( this.pos.x, this.pos.y, 16 );
+        ellipse( this.pos.x, this.pos.y, 7 );
     }
 }
 
@@ -85,54 +84,41 @@ class Connection {
     constructor( a1, a2 ) {
         this.a1 = a1;
         this.a2 = a2;
-        this.rest = createVector( ( a1.pos.x + a2.pos.x ) * 0.5, ( a1.pos.y + a2.pos.y ) * 0.5 );
-        this.p = createVector( this.rest.x + 40, this.rest.y + 40 );
-        // this.p = createVector( this.rest.x, this.rest.y );
-        this.acc = createVector( 0, 0 );
+        this.center = createVector( ( a1.pos.x + a2.pos.x ) * 0.5, ( a1.pos.y + a2.pos.y ) * 0.5 );
+        this.anchor = createVector( this.center.x, this.center.y );
+        this.hooked = false;
+        this.velocity = createVector( 0, 0 );
     }
 
     update() {
-        let force = createVector( this.rest.x - this.p.x, this.rest.y - this.p.y );
+        let dist_to_mouse = this.a1.pos.dist( mouse ) + this.a2.pos.dist( mouse ) - anchorGap;
 
-        noFill();
-        stroke( 100, 100, 255 );
-        line( this.rest.x, this.rest.y, this.rest.x + force.x, this.rest.y + force.y );
+        let dir = p5.Vector.sub( this.center, this.anchor ).normalize();
+        let dist_c = this.center.dist( this.anchor );
+        this.acc = dir.mult( dist_c ).div( 20 );
 
-        // this.force.add( force.x, force.y );
+        if( dist_to_mouse < 2 )
+            this.hooked = true;
 
-        // this.p.add( this.acc.x, this.acc.y );
+        if( this.hooked ) {
+            this.anchor.x = mouse.x;
+            this.anchor.y = mouse.y;
+
+            if( dist_to_mouse > anchorGap * 0.1 ) this.hooked = false;
+        } else {
+            this.velocity.add( this.acc );
+            this.velocity.mult( 0.92 );
+            this.anchor.add( this.velocity );
+        }
     }
 
     draw() {
-        // let distance = mouse.dist( this.m );
-
-        // let direction = createVector( this.m.x - mouse.x, this.m.y - mouse.y );
-        // let force_v = createVector( this.m.x - mouse.x, this.m.y - mouse.y ).normalize();
-        // let force_amount = 99999 / ( distance * distance );
-        // force_amount = constrain( force_amount, 0, 200 );
-        // force_v.setMag( force_amount );
-
-        // let target = createVector( this.m.x + force_v.x, this.m.y + force_v.y );
-
-        // noFill();
-        // strokeWeight( 1 );
-        // stroke( 255, 100, 100 );
-        // line( this.m.x, this.m.y, target.x, target.y );
-
-        // stroke( 100, 100, 255 );
-        // line( this.m.x, this.m.y, this.m.x + direction.x, this.m.y + direction.y );
-
-        fill( 255 );
-        noStroke();
-        ellipse( this.p.x, this.p.y, 16 );
-
-
         noFill();
-        stroke( 255 );
-        strokeWeight( 1 );
+        stroke( 80 );
+        strokeWeight( 2 );
         bezier( this.a1.pos.x, this.a1.pos.y,
-            this.p.x, this.p.y,
-            this.p.x, this.p.y,
+            this.anchor.x, this.anchor.y,
+            this.anchor.x, this.anchor.y,
             this.a2.pos.x, this.a2.pos.y );
     }
 }
